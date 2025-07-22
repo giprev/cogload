@@ -44,7 +44,7 @@ const afterPractice = {... trialStructure, stimulus: `<h2>${language.practice.en
 /*create blocks*/
 
 setArrays()
-
+// this creates the stimuli lists that are used in the create blocks function jsut below
 if (level === 0) {
     defineNullBack()
 } else if (level === 1) {
@@ -150,7 +150,7 @@ const timelineElementStructure = {
 }
 
 const practice = { ... timelineElementStructure, timeline_variables: nbackStimuli.stimuliPractice, timeline: [fixation, test, feedBackN, feedBackC, feedBackW] }
-const firstBlock = { ... timelineElementStructure, timeline_variables: nbackStimuli.stimuliFirstBlock, timeline: [fixation, test] }
+const firstBlock = { ... timelineElementStructure, timeline_variables: nbackStimuli.stimuliFirstBlock, timeline: [fixation, test] } // after test add a conditional pluggin that is displayed only every x trials
 const secondBlock = { ... firstBlock, timeline_variables: nbackStimuli.stimuliSecondBlock }
 
 

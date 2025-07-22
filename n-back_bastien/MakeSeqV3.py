@@ -43,3 +43,6 @@ def MakeSeqV3(nback, lseq):
     return index
 
 print("function MakeSeqV3 runs")
+
+test = MakeSeqV3(3, 12)
+print(test)
