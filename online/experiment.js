@@ -41,6 +41,8 @@ const ready = {... trialStructure, stimulus: `<p>${language.betweenBlocks.contin
 const startPractice = {... trialStructure, stimulus: `<p>${language.practice.practice}</p><p>${language.practice.startPractice}<p>`}
 const afterPractice = {... trialStructure, stimulus: `<h2>${language.practice.end}</h2><p>${language.task.start}</p><p>${language.task.press}<p>` };
 
+let nbackCounter = 0; // the counter for each n-back trial
+
 /*create blocks*/
 
 setArrays()
@@ -90,6 +92,7 @@ const test = {
   trial_duration: letterDuration,
   stimulus_duration: letterDuration,
   on_finish: function(data){
+    nbackCounter ++ ; 
     if (data.correct_response == "f" && data.key_press == 70){
         data.correct_rejection = 1;
     } else {
@@ -112,6 +115,15 @@ const test = {
     }
   },
 }
+
+const everyTenTrials = {
+  ... trialStructure,
+  stimulus: "<p>Conditional task test. Press any key to continue. </p>", 
+  on_start: function(trial){
+    console.log("Checking if nbackCounter == 10, 20, 30...");
+  }
+};
+
 
 /* define conditional timeline elements for practice */
 
@@ -142,15 +154,22 @@ const feedBackN = {
       }
   }
 
+  const everyTenT = {
+    timeline: [everyTenTrials],
+      conditional_function: function () {
+          return nbackCounter > 0 && nbackCounter % 10 === 0
+      }
+  }
+
 /*************** TIMELINE ***************/
- 
+
 const timelineElementStructure = {
     repetitions: 1,
     randomize_order: false,
 }
 
 const practice = { ... timelineElementStructure, timeline_variables: nbackStimuli.stimuliPractice, timeline: [fixation, test, feedBackN, feedBackC, feedBackW] }
-const firstBlock = { ... timelineElementStructure, timeline_variables: nbackStimuli.stimuliFirstBlock, timeline: [fixation, test] } // after test add a conditional pluggin that is displayed only every x trials
+const firstBlock = { ... timelineElementStructure, timeline_variables: nbackStimuli.stimuliFirstBlock, timeline: [fixation, test, everyTenT] } // after test add a conditional pluggin that is displayed only every x trials
 const secondBlock = { ... firstBlock, timeline_variables: nbackStimuli.stimuliSecondBlock }
 
 
