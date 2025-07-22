@@ -17,7 +17,7 @@ def MakeComposedSeq(nback, firstsec, secondsec):
                 crit = False
                 break
 
-    index_letter = SequenceOfLetterTB(total) # gives a sequence of numbers of the same size as the sequence of numbers (lseq)
+    index_letter = SequenceOfLetterTB(total) # gives a sequence of numbers of the same size as the sequence of numbers (lseq) so that letters are randomly either upper-case or lower-case
     
     letters  = ['A', 'E', 'I', 'O', 'U', 'Y', 'B', 'C', 'G', 'K', 'M', 'P']
     letters2 = ['a', 'e', 'i', 'o', 'u', 'y', 'b', 'c', 'g', 'k', 'm', 'p']
