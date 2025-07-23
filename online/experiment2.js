@@ -36,52 +36,17 @@ const instructions = {
   button_label_next: language.button.next,
   button_label_previous: language.button.previous
 }
-
-
-const instructions_flanker_1 = {
-	type: "html-button-response",
-	stimulus: `<p style='font-size: 15pt; text-align: left;'>See what direction the outside arrows are pointing. From the two options below<br>
-				select the one that has the middle arrow pointing in that direction. DON'T pay<br>
-				attention to the direction of the top middle arrow or the outside arrow direction of<br>
-				the two options below. It's important to match the top outside arrow direction with<br>
-				the middle arrow direction of the options below. We will begin with a practice round.<br>
-				You will have 30 seconds to earn as many points as possible.</p>
-    <div style='height: 75px;'></div>
-    <span style='font-size: 9pt;'>OUTSIDE ARROWS ARE POINTING LEFT</span><br>
-    <img src='${mr_fl}' width='290'><p><br></p>
-    <div>
-      <button class="choiceStyle" style="font-family: Open Sans;">
-        <div style="color: red; font-size: 34pt; font-weight: 200;">&#10008;</div>
-        <img src='${mr_fl}' width='290'>
-        <div style="font-size: 9pt; color: white; font-weight: normal;">WRONG ANSWER<br>(Inside arrow is right)</div>
-      </button>
-      <div class="space"></div>
-      <button class="choiceStyle" style="font-family: Open Sans;">
-        <div style="color: #1ED760; font-size: 34pt; font-weight: 200;">&#10004;</div>
-        <img src='${ml_fr}' width='290'>
-        <div style="font-size: 9pt; color: white; font-weight: normal;">RIGHT ANSWER<br>(Inside arrow is left)</div>
-      </button>
-    </div>
-  `,
-	choices: ["Begin practice"],
-	button_html: `<div style='height: 70px;'></div><button class="defaultButton">%choice%</button>`,
-	on_finish: function(data) {
-		data.task = "flanker";
-	}
-}
-
-
 const betweenBlockRest = {... trialStructure, stimulus: `<p>${language.betweenBlocks.rest}</p><p>${language.betweenBlocks.pressKey}</p>` };
 const ready = {... trialStructure, stimulus: `<p>${language.betweenBlocks.continue}</p>` };
 const startPractice = {... trialStructure, stimulus: `<p>${language.practice.practice}</p><p>${language.practice.startPractice}<p>`}
 const afterPractice = {... trialStructure, stimulus: `<h2>${language.practice.end}</h2><p>${language.task.start}</p><p>${language.task.press}<p>` };
 
-let nbackCounter = 0; // the counter for each n-back trial
+
 
 /*create blocks*/
 
 setArrays()
-// this creates the stimuli lists that are used in the create blocks function jsut below
+
 if (level === 0) {
     defineNullBack()
 } else if (level === 1) {
@@ -127,7 +92,6 @@ const test = {
   trial_duration: letterDuration,
   stimulus_duration: letterDuration,
   on_finish: function(data){
-    nbackCounter ++ ; 
     if (data.correct_response == "f" && data.key_press == 70){
         data.correct_rejection = 1;
     } else {
@@ -150,22 +114,6 @@ const test = {
     }
   },
 }
-
-const everyTenTrials = {
-  ... trialStructure,
-  stimulus: "<p>Conditional task test. Press any key to continue. </p>", 
-  on_start: function(trial){
-    console.log("Checking if nbackCounter == 10, 20, 30...");
-  }
-};
-
-// /* Create fixed random order of trials for practice and main phases of task (practice_flanker, main_flanker) */
-// let practice_flanker = jsPsych.randomization.sampleWithReplacement(items_flanker, 100);
-// let main_flanker = jsPsych.randomization.sampleWithReplacement(items_flanker, 500);
-
-// block_flanker_practice = createFlankerBlock(practice_flanker);
-// block_flanker_main = createFlankerBlock(main_flanker);
-
 
 /* define conditional timeline elements for practice */
 
@@ -196,22 +144,15 @@ const feedBackN = {
       }
   }
 
-  const everyTenT = {
-    timeline: [everyTenTrials],
-      conditional_function: function () {
-          return nbackCounter > 0 && nbackCounter % 10 === 0
-      }
-  }
-
 /*************** TIMELINE ***************/
-
+ 
 const timelineElementStructure = {
     repetitions: 1,
     randomize_order: false,
 }
 
 const practice = { ... timelineElementStructure, timeline_variables: nbackStimuli.stimuliPractice, timeline: [fixation, test, feedBackN, feedBackC, feedBackW] }
-const firstBlock = { ... timelineElementStructure, timeline_variables: nbackStimuli.stimuliFirstBlock, timeline: [fixation, test, everyTenT] } // after test add a conditional pluggin that is displayed only every x trials
+const firstBlock = { ... timelineElementStructure, timeline_variables: nbackStimuli.stimuliFirstBlock, timeline: [fixation, test] }
 const secondBlock = { ... firstBlock, timeline_variables: nbackStimuli.stimuliSecondBlock }
 
 
@@ -239,7 +180,7 @@ const debriefBlock = {
 };
 
 jsPsych.data.addProperties({subject: subjectId});
-timeline.push({type: "fullscreen", fullscreen_mode: false}, instructions, instructions_flanker_1, startPractice, practice, afterPractice, firstBlock, betweenBlockRest, ready, secondBlock, debriefBlock, {type: "fullscreen", fullscreen_mode: false});
+timeline.push({type: "fullscreen", fullscreen_mode: true}, instructions, startPractice, practice, afterPractice, firstBlock, betweenBlockRest, ready, secondBlock, debriefBlock, {type: "fullscreen", fullscreen_mode: false});
 
 /*************** EXPERIMENT START AND DATA UPDATE ***************/
 
