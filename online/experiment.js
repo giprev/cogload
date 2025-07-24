@@ -76,8 +76,6 @@ const ready = {... trialStructure, stimulus: `<p>${language.betweenBlocks.contin
 const startPractice = {... trialStructure, stimulus: `<p>${language.practice.practice}</p><p>${language.practice.startPractice}<p>`}
 const afterPractice = {... trialStructure, stimulus: `<h2>${language.practice.end}</h2><p>${language.task.start}</p><p>${language.task.press}<p>` };
 
-let nbackCounter = 0; // the counter for each n-back trial
-
 /*create blocks*/
 
 setArrays()

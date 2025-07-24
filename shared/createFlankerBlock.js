@@ -1,13 +1,14 @@
+// Function to create display stimulus + countdown bar
 function display_flanker(stimulus) {
-	let stim = stimuli_flanker[stimulus].stim;
+	var stim = stimuli_flanker[stimulus].stim;
 
 	return "<div style='font-size: 10pt; position: relative; left: 5%; display: flex; align-items: center;'>Time left<div id = 'countdownbar' style = 'margin: 0px 25px;'><div id = 'timeleft'></div></div><div style='align-self: baseline;'>Score<br><span style='font-size:27pt;'><b>" + total_flanker + "</b></span></div></div><div style='height: 130px;'></div>" +
 	"<img src='" + stim + "' width='290'><p><br></p>"
 }
 
-function createFlankerBlock(flanker){
-	const trial_flanker = {
-		type: "html-button-response",
+var createFlankerBlock = function(flanker) {
+	var trial_flanker = {
+		type: "jspsych-html-button-response",
 		stimulus: function() { return display_flanker(flanker[block_trial_count]); },
 		choices: function() { return [stimuli_flanker[flanker[block_trial_count]].resp1, stimuli_flanker[flanker[block_trial_count]].resp2]; },
 		button_html: function() {
@@ -20,7 +21,7 @@ function createFlankerBlock(flanker){
 		on_start: function() {
 			// Set up timer if it's the first trial
 			if (block_trial_count == 0) {
-				block_time_limit = practice == 1 ? practice_duration : main_duration;
+				block_time_limit = practice_indicator == 1 ? practice_duration : main_duration;
 				block_start = Date.now();
 
 				end_timer = setTimeout(function() {
@@ -42,7 +43,7 @@ function createFlankerBlock(flanker){
 		on_finish: function(data) {
 			data.block_trial_count = timeout == 1 ? block_trial_count : block_trial_count + 1;
 			data.task = "flanker";
-			data.practice = practice;
+			data.practice_indicator;
 			data.item = flanker[block_trial_count];
 			data.stim = stimuli_flanker[flanker[block_trial_count]].stimsign;
 			data.resp1 = stimuli_flanker[flanker[block_trial_count]].resp1sign;
@@ -67,8 +68,8 @@ function createFlankerBlock(flanker){
 		}
 	}
 
-	const feedback_flanker = {
-		type: jsPsychHtmlButtonResponse,
+	var feedback_flanker = {
+		type: "jspsych-html-button-response",
 		stimulus: function() { return display_flanker(flanker[block_trial_count]); },
 		choices: function() { return [stimuli_flanker[flanker[block_trial_count]].resp1, stimuli_flanker[flanker[block_trial_count]].resp2]; },
 		button_html: function() {
@@ -102,13 +103,13 @@ function createFlankerBlock(flanker){
 		response_ends_trial: false
 	}
 
-	const block_flanker = {
+	var block_flanker = {
 		timeline: [trial_flanker, feedback_flanker],
 		loop_function: function() {
 			return true;
 		}
 	}
-    
+
 	return block_flanker;
 }
 

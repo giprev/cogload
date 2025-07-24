@@ -7,6 +7,8 @@ Universite Claude Bernard Lyon 1
 Github:https://github.com/vekteo/Nback_JSPsych
 */
 
+// the goal of experiment3 is to implement the flankerBlocks in the same way as the original author did.
+
 /*************** VARIABLES ***************/
 
 let nbackStimuli = {};
@@ -98,8 +100,8 @@ createBlocks(nbackStimuli.stimuliListSecondBlock, nbackStimuli.stimuliSecondBloc
 let practice_flanker = jsPsych.randomization.sampleWithReplacement(items_flanker, 100);
 let main_flanker = jsPsych.randomization.sampleWithReplacement(items_flanker, 500);
 
-// block_flanker_practice = createFlankerBlock(practice_flanker);
-// block_flanker_main = createFlankerBlock(main_flanker);
+block_flanker_practice = createFlankerBlock(practice_flanker);
+block_flanker_main = createFlankerBlock(main_flanker);
 
 /* define practice feedback trials */
 
@@ -162,7 +164,10 @@ const everyTenTrials = {
     on_start: function(trial){
       console.log("Checking if nbackCounter == 10, 20, 30...");
     }
-  };
+  }
+
+
+
 
 /* define conditional timeline elements for practice */
 
@@ -194,7 +199,8 @@ const feedBackN = {
   }
 
 const everyTenT = {
-    timeline: [everyTenTrials],
+    timeline: [everyTenTrials, ],
+    timeline_variables: [1, 2, 2], // ou array of stimuli
       conditional_function: function () {
           return nbackCounter > 0 && nbackCounter % 10 === 0
       }
@@ -236,7 +242,7 @@ const debriefBlock = {
 };
 
 jsPsych.data.addProperties({subject: subjectId});
-timeline.push({type: "fullscreen", fullscreen_mode: false}, instructions, instructions_flanker_1, startPractice, practiceBlock, afterPractice, firstBlock, betweenBlockRest, ready, secondBlock, debriefBlock, {type: "fullscreen", fullscreen_mode: false});
+timeline.push({type: "fullscreen", fullscreen_mode: false}, /*instructions, instructions_flanker_1, startPractice, practiceBlock, afterPractice, */ firstBlock, betweenBlockRest, ready, secondBlock, debriefBlock, {type: "fullscreen", fullscreen_mode: false});
 
 /*************** EXPERIMENT START AND DATA UPDATE ***************/
 

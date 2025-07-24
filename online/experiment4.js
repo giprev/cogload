@@ -7,6 +7,8 @@ Universite Claude Bernard Lyon 1
 Github:https://github.com/vekteo/Nback_JSPsych
 */
 
+// the goal of experiment3 is to implement the flankerBlocks in the same way as the original author did.
+
 /*************** VARIABLES ***************/
 
 let nbackStimuli = {};
@@ -95,11 +97,15 @@ createBlocks(nbackStimuli.practiceList, nbackStimuli.stimuliPractice, level)
 createBlocks(nbackStimuli.stimuliListFirstBlock, nbackStimuli.stimuliFirstBlock, level)
 createBlocks(nbackStimuli.stimuliListSecondBlock, nbackStimuli.stimuliSecondBlock, level)
 
-let practice_flanker = jsPsych.randomization.sampleWithReplacement(items_flanker, 100);
-let main_flanker = jsPsych.randomization.sampleWithReplacement(items_flanker, 500);
 
+flankerVariables_main = generateFlankerVariables(500);
+flankerVariables_practice = generateFlankerVariables(100);
+
+// let practice_flanker = jsPsych.randomization.sampleWithReplacement(items_flanker, 100);
+// let main_flanker = jsPsych.randomization.sampleWithReplacement(items_flanker, 500);
 // block_flanker_practice = createFlankerBlock(practice_flanker);
 // block_flanker_main = createFlankerBlock(main_flanker);
+
 
 /* define practice feedback trials */
 
@@ -162,7 +168,70 @@ const everyTenTrials = {
     on_start: function(trial){
       console.log("Checking if nbackCounter == 10, 20, 30...");
     }
-  };
+  }
+
+  const test_flanker = { //trial flanker
+    type: "jspsych-html-button-response",
+    stimulus: jsPsych.timelineVariable('stim'),
+    choices: [jsPsych.timelineVariable('choice1'), jsPsych.timelineVariable('choice2')],
+    data: jsPsych.timelineVariable('data'),
+		button_html: function() {
+			var choice1 = '<button class="choiceStyle" style="font-family: Open Sans; font-weight: 1000;"><div style="color: black; font-size: 34pt; font-weight: 200;">_</div><img src=%choice% width="290"></button>'
+			var choice2 = '<button class="choiceStyle" style="font-family: Open Sans; font-weight: 1000;"><div style="color: black; font-size: 34pt; font-weight: 200;">_</div><img src=%choice% width="290"></button>'
+
+			return [choice1, choice2];
+		},
+		margin_horizontal: '53px',
+		on_start: function() {
+			// Set up timer if it's the first trial
+			if (block_trial_count == 0) {
+				block_time_limit = practice_indicator == 1 ? practice_duration : main_duration;
+				block_start = Date.now();
+
+				end_timer = setTimeout(function() {
+
+					block_trial_count = 0;
+					timeout = 1;
+
+					// console.log("Block timed out at this trial", block_trial_count, timeout); // Here to debug
+
+					// this function is all you need to end the current timeline
+					jsPsych.endCurrentTimeline();
+
+				}, block_time_limit);
+			}
+		},
+		on_load: function() {
+			countdown(block_start, block_time_limit);
+		},
+		on_finish: function(data) {
+			data.block_trial_count = timeout == 1 ? block_trial_count : block_trial_count + 1;
+			data.task = "flanker";
+			data.practice_indicator;
+			data.item = flanker[block_trial_count];
+			data.stim = stimuli_flanker[flanker[block_trial_count]].stimsign;
+			data.resp1 = stimuli_flanker[flanker[block_trial_count]].resp1sign;
+			data.resp2 = stimuli_flanker[flanker[block_trial_count]].resp2sign;
+			data.correct_response = stimuli_flanker[flanker[block_trial_count]].correct_response;
+			data.condition = stimuli_flanker[flanker[block_trial_count]].condition;
+			data.accuracy = data.response == stimuli_flanker[flanker[block_trial_count]].correct_response ? 1 : 0;
+			data.timeout = timeout;
+
+			switch(timeout) {
+				case 0:
+					total_flanker = data.accuracy == 1 ? total_flanker + 1 : total_flanker - 1;
+					break;
+				case 1:
+					total_flanker = total_flanker;
+					break;
+			}
+
+			data.score_after_trial = total_flanker;
+
+			// console.log(data, block_time_limit - (Date.now()-block_start), (Date.now() - block_start)) // Here to debug
+		}
+  }
+
 
 /* define conditional timeline elements for practice */
 
@@ -193,8 +262,9 @@ const feedBackN = {
       }
   }
 
-const everyTenT = {
-    timeline: [everyTenTrials],
+const flanker_t = { //timeline flanker
+    timeline: [everyTenTrials, test_flanker],
+    timeline_variables: [flankerVariables_practice], // ou array of stimuli
       conditional_function: function () {
           return nbackCounter > 0 && nbackCounter % 10 === 0
       }
@@ -236,7 +306,7 @@ const debriefBlock = {
 };
 
 jsPsych.data.addProperties({subject: subjectId});
-timeline.push({type: "fullscreen", fullscreen_mode: false}, instructions, instructions_flanker_1, startPractice, practiceBlock, afterPractice, firstBlock, betweenBlockRest, ready, secondBlock, debriefBlock, {type: "fullscreen", fullscreen_mode: false});
+timeline.push({type: "fullscreen", fullscreen_mode: false}, /*instructions, instructions_flanker_1, startPractice, practiceBlock, afterPractice, */ firstBlock, betweenBlockRest, ready, secondBlock, debriefBlock, {type: "fullscreen", fullscreen_mode: false});
 
 /*************** EXPERIMENT START AND DATA UPDATE ***************/
 
