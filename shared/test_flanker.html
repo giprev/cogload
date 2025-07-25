@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8"/>
+        <title>N-back task</title>
+        <script src="../shared/languages.js"></script>
+        <script src="../shared/parameters.js"></script>
+        <script src="../shared/normsinverz.js"></script>
+        <script src="../shared/statCalculation.js"></script>
+        <script src="../static/js/jspsych-6.1.0/jspsych.js"></script>
+        <script src="../static/js/jspsych-6.1.0/plugins/jspsych-html-keyboard-response.js"></script>
+        <script src="../static/js/jspsych-6.1.0/plugins/jspsych-html-button-response.js"></script>
+        <script src="../static/js/jspsych-6.1.0/plugins/jspsych-fullscreen.js"></script>
+        <script src="../static/js/jspsych-6.1.0/plugins/jspsych-instructions.js"></script>
+        <script src="../shared/stimuli.js"></script>
+        <script src="../shared/createBlocks.js"></script>
+        <!-- <script src="../shared/flanker_parameters.js"></script> -->
+        <!-- <script src="../shared/stimuli_flanker.js"></script> -->
+        <!-- <script src="../shared/createFlankerBlock.js"></script> -->
+        <link href="../static/js/jspsych-6.1.0/css/jspsych.css" rel="stylesheet" type="text/css"/>
+        <link href="../static/css/style.css" rel="stylesheet" type="text/css"/>
+    </head>
+    <body></body>
+    <script>
+
+
+/* parameters_flanker.js */
+const practice_duration = 30000; // duration of practice
+const main_duration = 90000; // duration of main task
+let total_flanker = 0;
+let block_trial_count = 0;
+let practice_indicator = 1; // Indicator of whether the trials being shown belong to the practice phase A !! Practice déjà défini dans experiment
+let timeout = 0; // Indicator whether trial was responded to when the task timed out
+let block_start;
+let block_time_limit;
+let items_flanker = Array.from(Array(16).keys()); // Array from 0-15
+
+
+/* stimuli_flanker.js */
+
+const ar = "../static/images/ar.PNG";
+const al = "../static/images/al.PNG";
+const mr_fl = "../static/images/mr_fl.PNG";
+const ml_fr = "../static/images/ml_fr.PNG";
+
+// Create object that has all the possible stimuli for the task (stimuli_flanker)
+var stimuli_flanker = [
+	{stim: al, stimsign: "<<<<<", resp1: ar, resp1sign: ">>>>>", resp2: al, resp2sign: "<<<<<", correct_response: 1, condition: 1, item: 0},
+	{stim: al, stimsign: "<<<<<", resp1: al, resp1sign: "<<<<<", resp2: ar, resp2sign: ">>>>>", correct_response: 0, condition: 1, item: 1},
+	{stim: ar, stimsign: ">>>>>", resp1: ar, resp1sign: ">>>>>", resp2: al, resp2sign: "<<<<<", correct_response: 0, condition: 1, item: 2},
+	{stim: ar, stimsign: ">>>>>", resp1: al, resp1sign: "<<<<<", resp2: ar, resp2sign: ">>>>>", correct_response: 1, condition: 1, item: 3},
+	{stim: al, stimsign: "<<<<<", resp1: ml_fr, resp1sign: ">><>>", resp2: mr_fl, resp2sign: "<<><<", correct_response: 0, condition: 2, item: 4},
+	{stim: al, stimsign: "<<<<<", resp1: mr_fl, resp1sign: "<<><<", resp2: ml_fr, resp2sign: ">><>>", correct_response: 1, condition: 2, item: 5},
+	{stim: ar, stimsign: ">>>>>", resp1: ml_fr, resp1sign: ">><>>", resp2: mr_fl, resp2sign: "<<><<", correct_response: 1, condition: 2, item: 6},
+	{stim: ar, stimsign: ">>>>>", resp1: mr_fl, resp1sign: "<<><<", resp2: ml_fr, resp2sign: ">><>>", correct_response: 0, condition: 2, item: 7},
+	{stim: mr_fl, stimsign: "<<><<", resp1: al, resp1sign: "<<<<<", resp2: ar, resp2sign: ">>>>>", correct_response: 0, condition: 3, item: 8},
+	{stim: mr_fl, stimsign: "<<><<", resp1: ar, resp1sign: ">>>>>", resp2: al, resp2sign: "<<<<<", correct_response: 1, condition: 3, item: 9},
+	{stim: ml_fr, stimsign: ">><>>", resp1: al, resp1sign: "<<<<<", resp2: ar, resp2sign: ">>>>>", correct_response: 1, condition: 3, item: 10},
+	{stim: ml_fr, stimsign: ">><>>", resp1: ar, resp1sign: ">>>>>", resp2: al, resp2sign: "<<<<<", correct_response: 0, condition: 3, item: 11},
+	{stim: mr_fl, stimsign: "<<><<", resp1: mr_fl, resp1sign: "<<><<", resp2: ml_fr, resp2sign: ">><>>", correct_response: 1, condition: 4, item: 12},
+	{stim: mr_fl, stimsign: "<<><<", resp1: ml_fr, resp1sign: ">><>>", resp2: mr_fl, resp2sign: "<<><<", correct_response: 0, condition: 4, item: 13},
+	{stim: ml_fr, stimsign: ">><>>", resp1: mr_fl, resp1sign: "<<><<", resp2: ml_fr, resp2sign: ">><>>", correct_response: 0, condition: 4, item: 14},
+	{stim: ml_fr, stimsign: ">><>>", resp1: ml_fr, resp1sign: ">><>>", resp2: mr_fl, resp2sign: "<<><<", correct_response: 1, condition: 4, item: 15}
+];
+
+
+/* functions_flanker.js */
+
+// Function to create display stimulus + countdown bar
+// function display_flanker(stimulus) {
+// 	// var stim = stimuli_flanker[stimulus].stim;
+// 	return "<div style='font-size: 10pt; position: relative; left: 5%; display: flex; align-items: center;'>Time left<div id = 'countdownbar' style = 'margin: 0px 25px;'><div id = 'timeleft'></div></div><div style='align-self: baseline;'>Score<br><span style='font-size:27pt;'><b>" + total_flanker + "</b></span></div></div><div style='height: 130px;'></div>" +
+// 	// "<img src='" + stimulus + "' width='290'><p><br></p>"
+//     `<img src='${stimulus}' width='290'><p><br></p>`
+// }
+function display_flanker(stimulus) {
+  return `<img src='${stimulus}' width='290'><p><br></p>`;
+}
+
+function countdown(start, timelimit) {
+
+	var timeleft_bar = document.getElementById("timeleft");
+	var timeleft_width = (timelimit - (Date.now() - start))*100/timelimit;
+	timeleft_bar.style.width = timeleft_width + "%";
+
+	function shorten_timebar() {
+		if (timeleft_width <= 0) {
+			clearInterval(update_timeleft)
+		} else {
+			timeleft_width -= 10*100/timelimit // 10: time interval set in setInterval;
+			timeleft_bar.style.width = timeleft_width + "%";
+		}
+	}
+
+	var update_timeleft = setInterval(shorten_timebar, 10);
+}
+
+
+function generateFlankerVariables(totalLength = 100) {
+    const shuffledBase = [...stimuli_flanker].sort(() => Math.random() - 0.5);
+  
+    let repeated = [];
+    while (repeated.length < totalLength) {
+      repeated.push(...shuffledBase);
+    }
+    repeated.length = totalLength;
+  
+    return repeated.sort(() => Math.random() - 0.5);
+  }
+
+
+
+/* experiment.js */
+
+/* define the trials */
+
+// var createFlankerBlock = function(flanker) {
+var trial_flanker = {
+    type: "html-button-response",
+    stimulus: function() { return display_flanker(jsPsych.timelineVariable('stim')); },
+    choices: function() { return [jsPsych.timelineVariable('resp1'), jsPsych.timelineVariable('resp2')]; },
+    button_html: function() {
+        var choice1 = '<button class="choiceStyle" style="font-family: Open Sans; font-weight: 1000;"><div style="color: black; font-size: 34pt; font-weight: 200;">_</div><img src=%choice% width="290"></button>'
+        var choice2 = '<button class="choiceStyle" style="font-family: Open Sans; font-weight: 1000;"><div style="color: black; font-size: 34pt; font-weight: 200;">_</div><img src=%choice% width="290"></button>'
+
+        return [choice1, choice2];
+    },  
+    margin_horizontal: '53px',
+    on_start: function() {
+        // Set up timer if it's the first trial
+        if (block_trial_count == 0) {
+            block_time_limit = practice_indicator == 1 ? practice_duration : main_duration;
+            block_start = Date.now();
+
+            end_timer = setTimeout(function() {
+
+                block_trial_count = 0;
+                timeout = 1;
+
+                // console.log("Block timed out at this trial", block_trial_count, timeout); // Here to debug
+
+                // this function is all you need to end the current timeline
+                jsPsych.endCurrentTimeline();
+
+            }, block_time_limit);
+        }
+    },
+    on_load: function() {
+        countdown(block_start, block_time_limit);
+    },
+    on_finish: function(data) { // 
+        data.block_trial_count = timeout == 1 ? block_trial_count : block_trial_count + 1;
+        data.task = "flanker";
+        data.practice_indicator = practice_indicator;
+        data.item = jsPsych.timelineVariable('item') ; //flanker[block_trial_count]; // flanker here is the array of trials, 100 between 1:16 for practice, 500 for main test. Data item is the line number of the stimuli and choices associated
+        data.stim = jsPsych.timelineVariable('stimsign') ; //stimuli_flanker[flanker[block_trial_count]].stimsign; 
+        data.resp1 = jsPsych.timelineVariable('resp1sign') ; //stimuli_flanker[flanker[block_trial_count]].resp1sign;
+        data.resp2 = jsPsych.timelineVariable('resp2sign') ; //stimuli_flanker[flanker[block_trial_count]].resp2sign;
+        data.correct_response = jsPsych.timelineVariable('correct_response') ; //stimuli_flanker[flanker[block_trial_count]].correct_response;
+        data.condition = jsPsych.timelineVariable('condition') ; //stimuli_flanker[flanker[block_trial_count]].condition;
+        data.accuracy = data.response == jsPsych.timelineVariable('correct_response') ? 1 : 0;
+        data.timeout = timeout;
+
+        switch(timeout) {
+            case 0:
+                total_flanker = data.accuracy == 1 ? total_flanker + 1 : total_flanker - 1;
+                break;
+            case 1:
+                total_flanker = total_flanker;
+                break;
+        }
+
+        data.score_after_trial = total_flanker;
+
+        // console.log(data, block_time_limit - (Date.now()-block_start), (Date.now() - block_start)) // Here to debug
+    }
+}
+
+var feedback_flanker = {
+    type: "html-button-response",
+    stimulus: function() { return display_flanker(jsPsych.timelineVariable('stim')); },
+    choices: function() { return [jsPsych.timelineVariable('resp1'), jsPsych.timelineVariable('resp2')]; },
+    button_html: function() {
+        var resp = jsPsych.data.get().last(1).values()[0].response;
+        var correct_response = jsPsych.data.get().last(1).values()[0].correct_response;
+
+        switch (resp) {
+            case 0:
+                var feedback1 = correct_response == 0 ? '<div style="color: #1ED760; font-size: 34pt; font-weight: 200;">&#10004;</div>' : '<div style="color: red; font-size: 34pt; font-weight: 200;">&#10008;</div>';
+                var feedback2 = '<div style="color: black; font-size: 34pt; font-weight: 200;">_</div>';
+                break;
+            case 1:
+                var feedback1 = '<div style="color: black; font-size: 34pt; font-weight: 200;">_</div>';
+                var feedback2 = correct_response == 1 ? '<div style="color: #1ED760; font-size: 34pt; font-weight: 200;">&#10004;</div>' : '<div style="color: red; font-size: 34pt; font-weight: 200;">&#10008;</div>';
+                break;
+        }
+
+        var choice1 = '<button class="choiceStyle" style="font-family: Open Sans; font-weight: 1000; color: #0000FF;">' + feedback1 + '<img src=%choice% width="290"></button>'
+        var choice2 = '<button class="choiceStyle" style="font-family: Open Sans; font-weight: 1000; color: #0000FF;">' + feedback2 + '<img src=%choice% width="290"></button>'
+
+        return [choice1, choice2];
+    },
+    margin_horizontal: '53px',
+    on_start: function() {
+        block_trial_count++
+    },
+    on_load: function() {
+        countdown(block_start, block_time_limit);
+    },
+    trial_duration: 500,
+    response_ends_trial: false
+}
+
+	// var block_flanker = {
+	// 	timeline: [trial_flanker, feedback_flanker],
+	// 	loop_function: function() {
+	// 		return true;
+	// 	}
+	// }
+
+	// return block_flanker;
+// }
+
+var welcome = {
+    type: "html-keyboard-response",
+    stimulus: "<div style='text-align: center;'><p>Welcome to the experiment.</p><img src='" + ar + "' alt='ar image'><p>Press any key to begin.</p></div>",
+  };
+
+var test_display = {
+    type: "html-keyboard-response",
+    stimulus: function() {
+    return jsPsych.timelineVariable('resp1', true);
+    }
+    
+
+        // return `<img src='${jsPsych.timelineVariable('stim')}' width='290'><p><br></p>`;}
+        // return `<img src='${stimuli_flanker[1].stim}' width='290'><p><br></p>`;}
+        // return `<img src='${practice_array[1].stim}' width='290'><p><br></p>`;}
+        // return display_flanker(practice_array[1]); }
+        // return display_flanker("../static/images/ar.PNG"); }
+        // return display_flanker(jsPsych.timelineVariable); }
+  }
+
+/* create the (nested) timeline variables */
+let practice_array = generateFlankerVariables(100)
+
+/* create trial of flanker : not needed here */
+// const test_flanker = createFlankerBlock()
+
+/* create (nested) timeline */
+
+const flanker_nested_timeline = { //timeline flanker
+    timeline: [test_display, trial_flanker, feedback_flanker],
+    timeline_variables: [{resp1: 'hahah'}], // ou array of stimuli
+
+    //   conditional_function: function () {
+    //       return nbackCounter > 0 && nbackCounter % 10 === 0
+    //   }
+  }
+
+/* initiatialize jsPsych with the main timeline */ 
+jsPsych.init({
+  timeline: [welcome, test_display, flanker_nested_timeline],
+  on_finish: function() {
+    jsPsych.data.displayData();
+  }
+});
+
+// Note : I will need to append the var that assign practice indicator to 1 or 0, before flanker_nested_timeline.
+console.log(stimuli_flanker[1]);
+console.log(practice_array);
+console.log(practice_array[1]);
+console.log(practice_array[1].stim);
+
+</script>
+</html>

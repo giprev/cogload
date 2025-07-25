@@ -16,7 +16,7 @@ var createFlankerBlock = function(flanker) {
 			var choice2 = '<button class="choiceStyle" style="font-family: Open Sans; font-weight: 1000;"><div style="color: black; font-size: 34pt; font-weight: 200;">_</div><img src=%choice% width="290"></button>'
 
 			return [choice1, choice2];
-		},
+		},  
 		margin_horizontal: '53px',
 		on_start: function() {
 			// Set up timer if it's the first trial
@@ -43,8 +43,8 @@ var createFlankerBlock = function(flanker) {
 		on_finish: function(data) {
 			data.block_trial_count = timeout == 1 ? block_trial_count : block_trial_count + 1;
 			data.task = "flanker";
-			data.practice_indicator;
-			data.item = flanker[block_trial_count];
+			data.practice_indicator = practice_indicator;
+			data.item = flanker[block_trial_count]; // flanker here is the array of trials, 100 between 1:16 for practice, 500 for main test. Data item is the line number of the stimuli and choices associated
 			data.stim = stimuli_flanker[flanker[block_trial_count]].stimsign;
 			data.resp1 = stimuli_flanker[flanker[block_trial_count]].resp1sign;
 			data.resp2 = stimuli_flanker[flanker[block_trial_count]].resp2sign;
