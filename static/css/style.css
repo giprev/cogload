@@ -59,7 +59,7 @@ body {
 .choiceStyle {
 	background-color: black; 
 	/* border: 2px solid white; */
-    width: 305px; /* 200px for stroop; 350px for flanker */;
+    width: 350px; /* 200px for stroop; 350px for flanker */;
 	/* color: white; 
 	padding: 5px 10px; */
 	text-align: center;
@@ -69,6 +69,12 @@ body {
     outline: none;
 	cursor: pointer;
 	}
+
+.choiceStyle img {
+    max-width: 100%;
+    height: auto;
+    /* display: block; */
+    }
 
 .defaultButton {
     width: 250px; 
@@ -83,6 +89,10 @@ body {
 
 .defaultButton:hover, .defaultButton:focus {
 	background-color: #eeeeee; 
+}
+
+.jspsych-html-button-response-button {
+
 }
 
 /* .jspsych-display-element {
