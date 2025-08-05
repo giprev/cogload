@@ -7,7 +7,7 @@ Universite Claude Bernard Lyon 1
 Github:https://github.com/vekteo/Nback_JSPsych
 */
 
-// the goal of experiment3 is to implement the flankerBlocks in the same way as the original author did.
+/* experiment 5 : compared to experiment 4 (old 3_2), the goal is to randomize the order of the blocks, (1-back and 3 back). There is not anymore firstBlock and secondBlock but easyBlock and hardBlock */
 
 /*************** VARIABLES ***************/
 
@@ -81,22 +81,34 @@ const afterPractice = {... trialStructure, stimulus: `<h2>${language.practice.en
 
 /*create blocks*/
 
-setArrays()
+setArrays() /* defines    nbackStimuli = {};
+                          nbackStimuli.stimuliEasy = [];
+                          nbackStimuli.stimuliHard = [];
+                          nbackStimuli.stimuliPracticeEasy = [];
+                          nbackStimuli.stimuliPracticeHard = [];
+                          nbackStimuli.correctResponse;
+                          nbackStimuli.target */
 
-if (level === 0) {
-    defineNullBack()
-} else if (level === 1) {
-    defineOneBack()
-} else if (level === 2) {
-    defineTwoBack()
+// if (level === 0) {
+//     defineNullBack()
+// } else if (level === 1) {
+//     defineOneBack()
+// } else 
+
+if (level === 2) {
+    defineHard2Back() 
 } else if (level === 3) {
-    defineThreeBack()
-}
+    defineHard3Back()
+} // these functions define nbackStimuli.practiceListHard and nbackStimuli.stimuliListHard
 
-createBlocks(nbackStimuli.practiceList, nbackStimuli.stimuliPractice, level)
-createBlocks(nbackStimuli.stimuliListFirstBlock, nbackStimuli.stimuliFirstBlock, level)
-createBlocks(nbackStimuli.stimuliListSecondBlock, nbackStimuli.stimuliSecondBlock, level)
+defineEasyBack()
 
+createBlocks(nbackStimuli.practiceListEasy, nbackStimuli.stimuliPracticeEasy, 1)
+createBlocks(nbackStimuli.practiceListHard, nbackStimuli.stimuliPracticeHard, level)
+createBlocks(nbackStimuli.stimuliListHard, nbackStimuli.stimuliHard, level)
+createBlocks(nbackStimuli.stimuliListEasy,nbackStimuli.stimuliEasy, 1)
+
+// previoulsy "createBlocks(nbackStimuli.stimuliListSecondBlock, nbackStimuli.stimuliSecondBlock, level)"
 
 /* define practice feedback trials */
 
@@ -189,7 +201,8 @@ function display_flanker(stimulus) {
 }
 
 
-// var createFlankerBlock = function(flanker) {
+/* define the flanker trials */ 
+
 const trial_flanker = {
     type: "html-button-response",
     stimulus: function() { return display_flanker(jsPsych.timelineVariable('stim', true)); },
@@ -286,6 +299,9 @@ const feedback_flanker = {
     on_load: function() {
         countdown(block_start, block_time_limit);
     },
+    on_finish: function() {
+        timeout = 0
+    },
     trial_duration: 500,
     response_ends_trial: false
 }
@@ -336,10 +352,30 @@ const timelineElementStructure = {
     randomize_order: false,
 }
 
-const practiceBlock = { ... timelineElementStructure, timeline_variables: nbackStimuli.stimuliPractice, timeline: [fixation, test, feedBackN, feedBackC, feedBackW] }
-const firstBlock = { ... timelineElementStructure, timeline_variables: nbackStimuli.stimuliFirstBlock, timeline: [fixation, test, everyTenT] }
-const secondBlock = { ... firstBlock, timeline_variables: nbackStimuli.stimuliSecondBlock }
+// const practiceBlock = { ... timelineElementStructure, timeline_variables: nbackStimuli.stimuliPractice, timeline: [fixation, test, feedBackN, feedBackC, feedBackW] }
+// const firstBlock = { ... timelineElementStructure, timeline_variables: nbackStimuli.stimuliFirstBlock, timeline: [fixation, test, everyTenT] }
+// const secondBlock = { ... firstBlock, timeline_variables: nbackStimuli.stimuliSecondBlock }
+const practiceEasyBlock = { ... timelineElementStructure, timeline_variables: nbackStimuli.stimuliPracticeEasy, timeline: [fixation, test, feedBackN, feedBackC, feedBackW] }
+const practiceHardBlock = { ... timelineElementStructure, timeline_variables: nbackStimuli.stimuliPracticeHard, timeline: [fixation, test, feedBackN, feedBackC, feedBackW] }
+const easyBlock = { ... timelineElementStructure, timeline_variables: nbackStimuli.stimuliEasy, timeline: [fixation, test, everyTenT] }
+const hardBlock = { ... easyBlock, timeline_variables: nbackStimuli.stimuliHard }
 
+const practiceAndTestEasy = {
+  timeline: [practiceEasyBlock, easyBlock],
+  repetitions: 1,
+  randomize_order: false,
+}
+const practiceAndTestHard = {
+  timeline: [practiceHardBlock, hardBlock],
+  repetitions: 1,
+  randomize_order: false,
+}
+
+const experiment = {
+  timeline : [practiceAndTestEasy, practiceAndTestHard],
+  repetitions: 1,
+  randomize_order: true,
+}
 
 const debriefBlock = {
   type: "html-keyboard-response",
@@ -366,7 +402,7 @@ const debriefBlock = {
 
 jsPsych.data.addProperties({subject: subjectId});
 timeline.push({type: "fullscreen", fullscreen_mode: false}, /*instructions, instructions_flanker_1, startPractice, practiceBlock,*/ afterPractice, firstBlock, betweenBlockRest, ready, secondBlock, debriefBlock, {type: "fullscreen", fullscreen_mode: false});
-
+// instructions, instructions_flanker_1, experiment, debriefBlock.
 /*************** EXPERIMENT START AND DATA UPDATE ***************/
 
 jsPsych.init({
