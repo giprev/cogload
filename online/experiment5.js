@@ -20,24 +20,53 @@ const subjectId = jsPsych.randomization.randomID(15)
 let nbackCounter = 0; // the counter for each n-back trial
 
 if (level == 0) {
-  instruction = language.instructions0back
+  instruction_hard = language.instructions0back
 } else if (level == 1) {
-  instruction = language.instructions1back
+  instruction_hard = language.instructions1back
 } else if (level == 2) {
-  instruction = language.instructions2back
+  instruction_hard = language.instructions2back
 } else if (level == 3) {
-  instruction = language.instructions3back
+  instruction_hard = language.instructions3back
+  console.log(instruction_hard)
 }
 
-const instructions = {
+const welcome = {
   type: "instructions",
   pages: [
-      `<h1>${language.welcomePage.welcome}</h1><br><p>${language.welcomePage.clickNext}</p>`,
-      `<p>${instruction.letter}</p><p>${instruction.yourTask1}</p><p>${instruction.yourTask2}</p><p>${language.generalInstruction.fastAndAccurate}</p>${instruction.image}<p>${language.generalInstruction.clickNext}</p>`
+      `<h1>${language.welcomePage.welcome}</h1><br><p>${language.welcomePage.clickNext}</p>`],
+  show_clickable_nav: true,
+  button_label_next: language.button.next,
+  button_label_previous: language.button.previous,
+}
+
+const instructions_easy = {
+  type: "instructions",
+  pages: [
+      `<p>${language.instructions1back.letter}</p><p>${language.instructions1back.yourTask1}</p><p>${language.instructions1back.yourTask2}</p><p>${language.generalInstruction.fastAndAccurate}</p>${language.instructions1back.image}<p>${language.generalInstruction.clickNext}</p>`
   ],
   show_clickable_nav: true,
   button_label_next: language.button.next,
-  button_label_previous: language.button.previous
+  button_label_previous: language.button.previous,
+  // on_start: function () {
+  //   console.log("instructions function starting")
+  //   if (easyBlock == 1) {
+  //     instruction = language.instructions1back
+  //   }
+  //   else if (easyBlock == 1 & level == 2)  {
+  //      instruction = language.instructions2back}
+  //   else { 
+  //     instruction = language.instructions3back}
+  // }
+}
+
+const instructions_hard = {
+  type: "instructions",
+  pages: [
+      `<p>${instruction_hard.letter}</p><p>${instruction_hard.yourTask1}</p><p>${instruction_hard.yourTask2}</p><p>${language.generalInstruction.fastAndAccurate}</p>${instruction_hard.image}<p>${language.generalInstruction.clickNext}</p>`
+  ],
+  show_clickable_nav: true,
+  button_label_next: language.button.next,
+  button_label_previous: language.button.previous,
 }
 
 const instructions_flanker_1 = {
@@ -79,7 +108,7 @@ const afterPractice = {... trialStructure, stimulus: `<h2>${language.practice.en
 
 
 
-/*create blocks*/
+/*create n-back variables*/
 
 setArrays() /* defines    nbackStimuli = {};
                           nbackStimuli.stimuliEasy = [];
@@ -89,19 +118,14 @@ setArrays() /* defines    nbackStimuli = {};
                           nbackStimuli.correctResponse;
                           nbackStimuli.target */
 
-// if (level === 0) {
-//     defineNullBack()
-// } else if (level === 1) {
-//     defineOneBack()
-// } else 
+defineEasyBack()
 
 if (level === 2) {
-    defineHard2Back() 
+    defineHard2Back(); 
 } else if (level === 3) {
-    defineHard3Back()
+    defineHard3Back();
 } // these functions define nbackStimuli.practiceListHard and nbackStimuli.stimuliListHard
 
-defineEasyBack()
 
 createBlocks(nbackStimuli.practiceListEasy, nbackStimuli.stimuliPracticeEasy, 1)
 createBlocks(nbackStimuli.practiceListHard, nbackStimuli.stimuliPracticeHard, level)
@@ -337,13 +361,22 @@ const feedBackN = {
       }
   }
 
-const everyTenT = {
-    timeline: [trial_flanker, feedback_flanker ],
-    timeline_variables: practice_array, // ou array of stimuli
-      conditional_function: function () {
-          return nbackCounter > 0 && nbackCounter % 10 === 0
-      }
-  }
+const block_indicator = {
+  ... trialStructure,
+  stimulus: function (){
+    if (block_order == 0){
+      return "<p> This is the first block. Press any key to continue. </p>"
+    }
+    else {return "<p> This is the second block. Press any key to continue. </p>"}
+  },
+}
+// const everyTenTrials = {
+//     ... trialStructure,
+//     stimulus: "<p>Conditional task test. Press any key to continue. </p>", 
+//     on_start: function(trial){
+//       console.log("Checking if nbackCounter == 10, 20, 30...");
+//     }
+//   }
 
 /*************** TIMELINE ***************/
  
@@ -352,30 +385,65 @@ const timelineElementStructure = {
     randomize_order: false,
 }
 
+const flanker_practice = {
+  timeline: [trial_flanker, feedback_flanker ],
+  timeline_variables: practice_array, // or main_array
+    // conditional_function: function () {
+    //     return nbackCounter > 0 && nbackCounter % 10 === 0
+    // }
+}
+
+const flanker = {
+  timeline: [trial_flanker, feedback_flanker ],
+  timeline_variables: main_array, // or main_array
+    conditional_function: function () {
+        return nbackCounter > 0 && nbackCounter % 10 === 0
+    }
+}
+
 // const practiceBlock = { ... timelineElementStructure, timeline_variables: nbackStimuli.stimuliPractice, timeline: [fixation, test, feedBackN, feedBackC, feedBackW] }
 // const firstBlock = { ... timelineElementStructure, timeline_variables: nbackStimuli.stimuliFirstBlock, timeline: [fixation, test, everyTenT] }
 // const secondBlock = { ... firstBlock, timeline_variables: nbackStimuli.stimuliSecondBlock }
 const practiceEasyBlock = { ... timelineElementStructure, timeline_variables: nbackStimuli.stimuliPracticeEasy, timeline: [fixation, test, feedBackN, feedBackC, feedBackW] }
 const practiceHardBlock = { ... timelineElementStructure, timeline_variables: nbackStimuli.stimuliPracticeHard, timeline: [fixation, test, feedBackN, feedBackC, feedBackW] }
-const easyBlock = { ... timelineElementStructure, timeline_variables: nbackStimuli.stimuliEasy, timeline: [fixation, test, everyTenT] }
+const easyBlock = { ... timelineElementStructure, timeline_variables: nbackStimuli.stimuliEasy, timeline: [fixation, test, flanker] }
 const hardBlock = { ... easyBlock, timeline_variables: nbackStimuli.stimuliHard }
 
 const practiceAndTestEasy = {
-  timeline: [practiceEasyBlock, easyBlock],
+  timeline: [block_indicator, instructions_easy, startPractice, practiceEasyBlock, afterPractice,/*ready_to_go ? */ easyBlock],
   repetitions: 1,
   randomize_order: false,
-}
+  on_start: function () {
+    blockEasy = 1;
+    console.log("practice and test easy")
+  },
+  on_finish: function () {
+    block_order++;
+  }
+};
 const practiceAndTestHard = {
-  timeline: [practiceHardBlock, hardBlock],
+  timeline: [block_indicator, instructions_hard, startPractice, practiceHardBlock, afterPractice, hardBlock],
   repetitions: 1,
   randomize_order: false,
-}
+  on_start: function () {
+    blockEasy = 0;
+  },
+  on_finish: function () {
+    block_order++;
+    console.log("practice and test hard")
+  }
+};
 
-const experiment = {
-  timeline : [practiceAndTestEasy, practiceAndTestHard],
-  repetitions: 1,
-  randomize_order: true,
+
+if (Math.random() < 0.5) {
+  experimentBlocks = [practiceAndTestHard, practiceAndTestEasy];
+} else {
+  experimentBlocks = [practiceAndTestEasy, practiceAndTestHard];
 }
+const experiment = {
+timeline: experimentBlocks,
+randomize_order: true,
+};
 
 const debriefBlock = {
   type: "html-keyboard-response",
@@ -401,8 +469,9 @@ const debriefBlock = {
 };
 
 jsPsych.data.addProperties({subject: subjectId});
-timeline.push({type: "fullscreen", fullscreen_mode: false}, /*instructions, instructions_flanker_1, startPractice, practiceBlock,*/ afterPractice, firstBlock, betweenBlockRest, ready, secondBlock, debriefBlock, {type: "fullscreen", fullscreen_mode: false});
+timeline.push({type: "fullscreen", fullscreen_mode: false}, /*welcome, instructions_flanker_1, flanker_practice,*/ /* startPractice, practiceBlock, afterPractice, firstBlock, betweenBlockRest, ready, secondBlock,*/ experiment, debriefBlock, {type: "fullscreen", fullscreen_mode: false});
 // instructions, instructions_flanker_1, experiment, debriefBlock.
+
 /*************** EXPERIMENT START AND DATA UPDATE ***************/
 
 jsPsych.init({

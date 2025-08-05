@@ -14,3 +14,5 @@ let timeout = 0; // Indicator whether trial was responded to when the task timed
 let block_start;
 let block_time_limit;
 let items_flanker = Array.from(Array(16).keys()); // Array from 0-15
+let blockEasy = 0;
+let block_order =0;
