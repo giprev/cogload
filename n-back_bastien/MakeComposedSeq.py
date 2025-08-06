@@ -29,7 +29,10 @@ def MakeComposedSeq(nback, firstsec, secondsec):
         else:
             l_letters.append(letters2[index[i] - 1])
     
-    return l_letters, index
+    return l_letters#, index
 
-result = MakeComposedSeq(2, 14, 14)
+result = MakeComposedSeq(2, 31, 31)
 print(result)
+
+b = [6, 6, 9, 2, 1, 11, 1, 11, 1, 2, 11, 2, 6, 3, 1, 2, 11, 9, 9, 3, 9, 3, 1, 11, 1, 11]
+print(len(b))
