@@ -62,8 +62,22 @@ const en = {
         rt: "Your average response time was ",
         rt2: " ms."
     },
-    task: {
+    task1back: {
         start: "The task start now. From now on, you won't receive any feedback.",
+        remember1: "Remember: press the key <strong>'J'</strong> if the letter on the screen is the same as the <strong style='color:red'>previous</strong> one</strong>.",
+        remember2: "Otherwise, press the key <strong>'F'</strong>.",
+        press: "Press any key to start the task!",
+    },
+    task2back: {
+        start: "The task start now. From now on, you won't receive any feedback.",
+        remember1: "Remember: press the key <strong>'J'</strong> if the letter on the screen is the same as <strong style='color:red'>two</strong> letters earlier.",
+        remember2: "Otherwise, press the key <strong>'F'</strong>.",
+        press: "Press any key to start the task!",
+    },
+    task3back: {
+        start: "The task start now. From now on, you won't receive any feedback.",
+        remember1: "Remember: press the key <strong>'J'</strong> if the letter on the screen is the same as <strong style='color:red'>three</strong> letters earlier.",
+        remember2: "Otherwise, press the key <strong>'F'</strong>.",
         press: "Press any key to start the task!",
     },
     parameters: {

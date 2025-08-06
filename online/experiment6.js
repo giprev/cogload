@@ -350,6 +350,7 @@ const afterHardBlock = {
     console.log("afterHardBlock activated")
     total_flanker_hard = total_flanker
     total_flanker = 0
+    nbackCounter = 0
     console.log(total_flanker_hard, "is total_flanker_hard at the end of the hard block")
   }
 }
@@ -357,12 +358,13 @@ const afterHardBlock = {
 const afterEasyBlock = {
   ... trialStructure,
   stimulus: "",
-  trial_duration: 0,
+  trial_duration:0,
   on_start: function () {
     console.log("afterEasyBlock activated")
     total_flanker_easy = total_flanker
     total_flanker = 0
-    console.log(total_flanker_easy, "is total_flanker_easy at the end of the hard block")
+    nbackCounter = 0
+    console.log(total_flanker_easy, "is total_flanker_easy at the end of the easy block")
   }
 }
 
@@ -446,50 +448,207 @@ const flanker_practice = {
 //   flanker_variables = main_array_hard;
 //   console.log("Using hard array", flanker_variables);
 // }
-const flanker = {
+// let flanker_variables = [];
+// console.log(flanker_variables)
+// let flanker_stimuli_index = 0;
+
+
+// const stimuli_counter = {
+//     ... trialStructure,
+//     stimulus: "this is the stimuli counter trial",
+//     trial_duration: 5000,
+//     on_start: function () {
+//         flanker_stimuli_index++
+//         console.log(flanker_stimuli_index, "Is flanker_stimuli_index. Should count the number of flnaker task")
+//         flanker_variables = main_array_hard_by_round[flanker_stimuli_index]
+//         console.log(flanker_variables, "Is flanker_variables. Should be the stimuli of the flanker ahead, an array")
+//       }
+//   }
+
+// const flanker_stimuli_counter = {
+//     timeline: [stimuli_counter],//flanker_variables,
+//     conditional_function: function () {
+//         if (nbackCounter > 0 && nbackCounter % 10 === 0) {
+//             console.log("timeline flanker_stimuli_counter activated")
+//     };
+//     return nbackCounter > 0 && nbackCounter % 10 === 0;
+// }
+// }
+
+// const flanker = {
+//     timeline: [trial_flanker, feedback_flanker ],
+//     timeline_variables: flanker_variables,//flanker_variables,
+//     conditional_function: function () {
+//         if (nbackCounter > 0 && nbackCounter % 10 === 0) {
+//           timeout = 0
+//       };
+//         return nbackCounter > 0 && nbackCounter % 10 === 0;
+//     }
+//   }
+
+const flanker_1 = {
   timeline: [trial_flanker, feedback_flanker ],
-  timeline_variables: main_array_easy,
+  timeline_variables: main_array_1,//flanker_variables,
   conditional_function: function () {
       if (nbackCounter > 0 && nbackCounter % 10 === 0) {
         timeout = 0
-      };
-      return nbackCounter > 0 && nbackCounter % 10 === 0;
+    };
+      return nbackCounter == 10;
   }
 }
 
+const flanker_2 = {
+    timeline: [trial_flanker, feedback_flanker ],
+    timeline_variables: main_array_2,//flanker_variables,
+    conditional_function: function () {
+        if (nbackCounter > 0 && nbackCounter % 10 === 0) {
+          timeout = 0
+      };
+        return nbackCounter == 20;
+    }
+  }
+
+const flanker_3 = {
+    timeline: [trial_flanker, feedback_flanker ],
+    timeline_variables: main_array_3,//flanker_variables,
+    conditional_function: function () {
+        if (nbackCounter > 0 && nbackCounter % 10 === 0) {
+          timeout = 0
+      };
+        return nbackCounter == 30;
+    }
+  }
+
+const flanker_4 = {
+    timeline: [trial_flanker, feedback_flanker ],
+    timeline_variables: main_array_4,//flanker_variables,
+    conditional_function: function () {
+        if (nbackCounter > 0 && nbackCounter % 10 === 0) {
+          timeout = 0
+      };
+        return nbackCounter == 40;
+    }
+  }
+
+const flanker_5 = {
+    timeline: [trial_flanker, feedback_flanker ],
+    timeline_variables: main_array_5,//flanker_variables,
+    conditional_function: function () {
+        if (nbackCounter > 0 && nbackCounter % 10 === 0) {
+          timeout = 0
+      };
+        return nbackCounter == 50;
+    }
+  }
+
+const flanker_6 = {
+    timeline: [trial_flanker, feedback_flanker ],
+    timeline_variables: main_array_6, //flanker_variables,
+    conditional_function: function () {
+        if (nbackCounter > 0 && nbackCounter % 10 === 0) {
+          timeout = 0
+      };
+        return nbackCounter == 60;
+    }
+  }
+
+  const flanker_7 = {
+    timeline: [trial_flanker, feedback_flanker ],
+    timeline_variables: main_array_7,//flanker_variables,
+    conditional_function: function () {
+        if (nbackCounter > 0 && nbackCounter % 10 === 0) {
+          timeout = 0
+      };
+        return nbackCounter == 10;
+    }
+  }
+  
+  const flanker_8 = {
+      timeline: [trial_flanker, feedback_flanker ],
+      timeline_variables: main_array_8,//flanker_variables,
+      conditional_function: function () {
+          if (nbackCounter > 0 && nbackCounter % 10 === 0) {
+            timeout = 0
+        };
+          return nbackCounter == 20;
+      }
+    }
+  
+  const flanker_9 = {
+      timeline: [trial_flanker, feedback_flanker ],
+      timeline_variables: main_array_9,//flanker_variables,
+      conditional_function: function () {
+          if (nbackCounter > 0 && nbackCounter % 10 === 0) {
+            timeout = 0
+        };
+          return nbackCounter == 30;
+      }
+    }
+  
+  const flanker_10 = {
+      timeline: [trial_flanker, feedback_flanker ],
+      timeline_variables: main_array_10,//flanker_variables,
+      conditional_function: function () {
+          if (nbackCounter > 0 && nbackCounter % 10 === 0) {
+            timeout = 0
+        };
+          return nbackCounter == 40;
+      }
+    }
+  
+  const flanker_11 = {
+      timeline: [trial_flanker, feedback_flanker ],
+      timeline_variables: main_array_11,//flanker_variables,
+      conditional_function: function () {
+          if (nbackCounter > 0 && nbackCounter % 10 === 0) {
+            timeout = 0
+        };
+          return nbackCounter == 50;
+      }
+    }
+  
+  const flanker_12 = {
+      timeline: [trial_flanker, feedback_flanker ],
+      timeline_variables: main_array_12, //flanker_variables,
+      conditional_function: function () {
+          if (nbackCounter > 0 && nbackCounter % 10 === 0) {
+            timeout = 0
+        };
+          return nbackCounter == 60;
+      }
+    }
 // const practiceBlock = { ... timelineElementStructure, timeline_variables: nbackStimuli.stimuliPractice, timeline: [fixation, test, feedBackN, feedBackC, feedBackW] }
 // const firstBlock = { ... timelineElementStructure, timeline_variables: nbackStimuli.stimuliFirstBlock, timeline: [fixation, test, everyTenT] }
 // const secondBlock = { ... firstBlock, timeline_variables: nbackStimuli.stimuliSecondBlock }
-const practiceEasyBlock = { ... timelineElementStructure, timeline_variables: nbackStimuli.stimuliPracticeEasy, timeline: [fixation, test, feedBackN, feedBackC, feedBackW] }
+
+
+const practiceEasyBlock = { ... timelineElementStructure, timeline_variables: nbackStimuli.stimuliPracticeEasy, timeline: [fixation, test, feedBackN, feedBackC, feedBackW]}
 const practiceHardBlock = { ... timelineElementStructure, timeline_variables: nbackStimuli.stimuliPracticeHard, timeline: [fixation, test, feedBackN, feedBackC, feedBackW] }
-const easyBlock = { ... timelineElementStructure, timeline_variables: nbackStimuli.stimuliEasy, timeline: [fixation, test, flanker] }
-const hardBlock = { ... easyBlock, timeline_variables: nbackStimuli.stimuliHard }
+
+const easyBlock = { ... timelineElementStructure, timeline_variables: nbackStimuli.stimuliEasy, timeline: [fixation, test, flanker_1, flanker_2, flanker_3, flanker_4, flanker_5, flanker_6] }
+const hardBlock = { ... easyBlock, timeline_variables: nbackStimuli.stimuliHard,timeline: [fixation, test, flanker_7, flanker_8, flanker_9, flanker_10, flanker_11, flanker_12] }
 
 const practiceAndTestEasy = {
-  timeline: [block_indicator, instructions_easy, startPractice, practiceEasyBlock, afterPracticeEasy, easyBlock, afterEasyBlock],
+  timeline: [block_indicator, /*instructions_easy, startPractice, practiceEasyBlock, afterPracticeEasy,*/ easyBlock, afterEasyBlock],
   repetitions: 1,
   randomize_order: false,
   on_start: function () {
     blockEasy = 1;
-    console.log(blockEasy, "is blockEasy state.");
   },
   on_finish: function () {
     block_order++;
-    console.log(total_flanker_easy, "is total_flanker_easy")
   }
 };
 const practiceAndTestHard = {
-  timeline: [block_indicator, instructions_hard, startPractice, practiceHardBlock, afterPracticeHard, hardBlock, afterHardBlock],
+  timeline: [block_indicator, /*instructions_hard, startPractice, practiceHardBlock, afterPracticeHard,*/ hardBlock, afterHardBlock],
   repetitions: 1,
   randomize_order: false,
   on_start: function () {
     blockEasy = 0;
-    console.log(blockEasy, "is blockEasy state.")
+    console.log("practiceAndTestHard")
   },
   on_finish: function () {
     block_order++;
-    console.log(total_flanker_hard, "is total flanker hard")
-    console.log("practice and test hard")
   }
 };
 

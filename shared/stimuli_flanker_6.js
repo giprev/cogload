@@ -63,6 +63,20 @@ const practice_array = generateFlankerVariables(100)
 const main_array_easy = generateFlankerVariables(500)
 const main_array_hard = generateFlankerVariables(500)
 
+
+const main_array_1 = generateFlankerVariables(100)
+const main_array_2 = generateFlankerVariables(100)
+const main_array_3 = generateFlankerVariables(100)
+const main_array_4 = generateFlankerVariables(100)
+const main_array_5 = generateFlankerVariables(100)
+const main_array_6 = generateFlankerVariables(100)
+const main_array_7 = generateFlankerVariables(100)
+const main_array_8 = generateFlankerVariables(100)
+const main_array_9 = generateFlankerVariables(100)
+const main_array_10 = generateFlankerVariables(100)
+const main_array_11 = generateFlankerVariables(100)
+const main_array_12 = generateFlankerVariables(100)
+
 // function generateFlankerVariables(totalLength = 100) {
 //   // Step 1: Shuffle the original stimuli once
 //   const shuffledBase = [...stimuli_flanker].sort(() => Math.random() - 0.5);
