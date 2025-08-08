@@ -42,5 +42,6 @@ def MakeSeqV3(nback, lseq):
 
     return index
 
-# test = MakeSeqV3(3, 12)
-
+print("MakeSeqV3 from Nback_jsPsych activated")
+# test = MakeSeqV3(2, 10)
+# print(test)

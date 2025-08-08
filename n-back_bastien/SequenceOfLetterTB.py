@@ -7,3 +7,6 @@ def SequenceOfLetterTB(lseq):
         index_letter_tmp = [1] * (lseq // 2) + [2] * (lseq // 2)
         random.shuffle(index_letter_tmp)
         return index_letter_tmp
+
+# test = SequenceOfLetterTB(10)
+# print(test)

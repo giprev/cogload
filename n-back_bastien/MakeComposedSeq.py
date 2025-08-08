@@ -7,7 +7,7 @@ def MakeComposedSeq(nback, firstsec, secondsec):
     crit = False
     
     while not crit:
-        index = MakeSeqV3(nback, firstsec) + MakeSeqV3(nback, secondsec)
+        index = ['I', 'C', 'a', 'o', 'o', 'c', 'o', 'C', 'A', 'i', 'A', 'I']+ MakeSeqV3(nback, secondsec) #MakeSeqV3(nback, firstsec) + MakeSeqV3(nback, secondsec)
         
         # Check the specific pattern
         crit = True  # assume it's valid unless proven otherwise
@@ -29,10 +29,10 @@ def MakeComposedSeq(nback, firstsec, secondsec):
         else:
             l_letters.append(letters2[index[i] - 1])
     
-    return l_letters#, index
+    return l_letters #, index
 
-result = MakeComposedSeq(2, 31, 31)
+result = MakeComposedSeq(2, 12, 12)
 print(result)
 
-b = [6, 6, 9, 2, 1, 11, 1, 11, 1, 2, 11, 2, 6, 3, 1, 2, 11, 9, 9, 3, 9, 3, 1, 11, 1, 11]
-print(len(b))
+# b = [6, 6, 9, 2, 1, 11, 1, 11, 1, 2, 11, 2, 6, 3, 1, 2, 11, 9, 9, 3, 9, 3, 1, 11, 1, 11]
+# print(len(b))
