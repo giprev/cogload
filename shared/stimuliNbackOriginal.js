@@ -15,8 +15,8 @@ function defineNullBack() {
 
 function defineOneBack() {
   nbackStimuli.practiceList = ["B", "P", "K", "K", "H", "M", "Q", "Q", "X", "N"];
-  nbackStimuli.stimuliListFirstBlock = ["H", "H", "T", "X", "H", "N", "X", "B", "N", "M", "X", "X", "B", "R", "X", "Q", "B", "Q", "T", "T","Q", "M", "R", "N","P", "P", "B", "B", "P","M",  "R", "R", "N", "N", "K", "Q", "Q", "K", "K", "T", "P", "K", "P", "M", "M", "K",  "R", "H", "T", "H", "T", "P", "H", "M", "P", "K", "X", "Q", "K", "P", "Q", "T", "M"]
-  nbackStimuli.stimuliListSecondBlock = ["K", "R", "N","P","H", "B","B","T", "H", "H",  "X", "K", "M", "K", "K", "P",  "P",  "B", "X", "M", "X", "X", "R", "Q", "N", "H", "P", "Q", "Q","H", "P", "B", "N", "M", "M","B", "K", "M", "Q", "X", "N",  "N", "T", "R", "R", "T", "T", "R", "T", "Q", "T", "P", "H", "M", "P", "K", "X", "Q", "K", "P", "Q", "T", "M"]
+  nbackStimuli.stimuliListFirstBlock = ["H", "H", "T", "X", "H", "N", "X", "B", "N", "M", "X", "X", "B", "R", "X", "Q", "B", "Q", "T", "T","Q", "M", "R", "N","P", "P", "B", "B", "P","M",  "R", "R", "N", "N", "K", "Q", "Q", "K", "K", "T", "P", "K", "P", "M", "M", "K",  "R", "H", "T", "H"]
+  nbackStimuli.stimuliListSecondBlock = ["K", "R", "N","P","H", "B","B","T", "H", "H",  "X", "K", "M", "K", "K", "P",  "P",  "B", "X", "M", "X", "X", "R", "Q", "N", "H", "P", "Q", "Q","H", "P", "B", "N", "M", "M","B", "K", "M", "Q", "X", "N",  "N", "T", "R", "R", "T", "T", "R", "T", "Q"]
 }
 
 function defineTwoBack() {
@@ -27,8 +27,7 @@ function defineTwoBack() {
 
 function defineThreeBack() {
   nbackStimuli.practiceList = ["B", "K", "P", "H", "K", "Q", "M", "X", "Q", "N"];
-  nbackStimuli.stimuliListFirstBlock = ["N", "K", "X", "Q", "M", "X", "Q", "X", "T", "P", "Q", "T", "P", "K", "Q", "N", "R", "B", "T", "R", "N", "X", "K", "N", "R", "K", "Q", "M", "R", "B", "K", "P", "M", "H", "N", "M", "T", "P", "X", "B", "H", "T", "B", "B", "H", "P", "M", "H", "R", "H", "T", "P", "H", "M", "P", "K", "X", "Q", "K", "P", "Q", "T", "M"]
-  nbackStimuli.stimuliListSecondBlock = ["T", "P", "H", "M", "P", "K", "X", "Q", "K", "P", "Q", "T", "M", "R", "Q", "X", "K", "B", "R", "X", "B", "P", "H", "M", "T", "H", "M", "N", "K", "X", "N", "R", "X", "T", "K", "P", "T", "M", "B", "Q", "B", "N", "H", "N", "H", "R", "B", "Q", "R", "N", "T", "P", "H", "M", "P", "K", "X", "Q", "K", "P", "Q", "T", "M"]
+  nbackStimuli.stimuliListFirstBlock = ["N", "K", "X", "Q", "M", "X", "Q", "X", "T", "P", "Q", "T", "P", "K", "Q", "N", "R", "B", "T", "R", "N", "X", "K", "N", "R", "K", "Q", "M", "R", "B", "K", "P", "M", "H", "N", "M", "T", "P", "X", "B", "H", "T", "B", "B", "H", "P", "M", "H", "R", "H"]
+  nbackStimuli.stimuliListSecondBlock = ["T", "P", "H", "M", "P", "K", "X", "Q", "K", "P", "Q", "T", "M", "R", "Q", "X", "K", "B", "R", "X", "B", "P", "H", "M", "T", "H", "M", "N", "K", "X", "N", "R", "X", "T", "K", "P", "T", "M", "B", "Q", "B", "N", "H", "N", "H", "R", "B", "Q", "R", "N"]
 }
 
-/* 63 n-back stimuli: 10 before each target task (6 target tasks of 15 seconds each = 1min 30) + 3 at the end so participants are incentivized to keep the letters in mind for the last task. */

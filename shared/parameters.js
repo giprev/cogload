@@ -1,4 +1,4 @@
-const level = 3; //available levels: 0, 1, 2, 3
+const level = 2; //available levels: 0, 1, 2, 3
 const fixationDuration = 500;
 const letterDuration = 1500;
 const feedBackDuration = 200; // 1000
@@ -11,7 +11,7 @@ let total_flanker = 0;
 let total_flanker_easy = 0;
 let total_flanker_hard = 0;
 let block_trial_count = 0;
-let practice_indicator = 0; // Indicator of whether the trials being shown belong to the practice phase A !! Practice déjà défini dans experiment
+let practice_indicator = 1; // Indicator of whether the trials being shown belong to the practice phase. The first does, then it switches to 0 in after_flanker_practice. 
 let timeout = 0; // Indicator whether trial was responded to when the task timed out
 let block_start;
 let block_time_limit;

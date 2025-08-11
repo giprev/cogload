@@ -154,7 +154,7 @@ const feedbackCorrect = {
   stimulus: `<div style="font-size:40px; color: green">${language.feedback.correct}</div>`,
   choices: jsPsych.NO_KEYS,
   trial_duration: feedBackDuration,
-  data: {test_part: 'feedback'}
+  data: {test_part: 'feedback_nback'}
 }
 
 const feedbackWrong = { ... feedbackCorrect, stimulus: `<div style="font-size:40px; color: red">${language.feedback.wrong}</div>` }
@@ -167,7 +167,7 @@ const fixation = {
   stimulus: '<div style="font-size:30px;">+</div>',
   choices: jsPsych.NO_KEYS,
   trial_duration: fixationDuration,
-  data: {test_part: 'fixation'}
+  data: {test_part: 'fixation_nback'}
 }
 
 const test = {
@@ -179,6 +179,7 @@ const test = {
   stimulus_duration: letterDuration,
   on_finish: function(data){
     nbackCounter ++ ; 
+    data.task = 'n-back'
     if (data.correct_response == "f" && data.key_press == 70){
         data.correct_rejection = 1;
     } else {
@@ -375,7 +376,9 @@ const afterFlankerPractice = {
   on_start: function () {
     console.log("afterFlankerPractice activated")
     total_flanker = 0
+    practice_indicator = 0
     console.log(total_flanker, "is total_flanker at the end of the the flanker_practice")
+    console.log(practice_indicator, "is practice_indicator, the indicator for flanker trials (their length)")
   }
 }
 
@@ -629,7 +632,7 @@ const easyBlock = { ... timelineElementStructure, timeline_variables: nbackStimu
 const hardBlock = { ... easyBlock, timeline_variables: nbackStimuli.stimuliHard,timeline: [fixation, test, flanker_7, flanker_8, flanker_9, flanker_10, flanker_11, flanker_12] }
 
 const practiceAndTestEasy = {
-  timeline: [block_indicator, /*instructions_easy, startPractice, practiceEasyBlock, afterPracticeEasy,*/ easyBlock, afterEasyBlock],
+  timeline: [block_indicator, instructions_easy, startPractice, practiceEasyBlock, afterPracticeEasy, easyBlock, afterEasyBlock],
   repetitions: 1,
   randomize_order: false,
   on_start: function () {
@@ -640,7 +643,7 @@ const practiceAndTestEasy = {
   }
 };
 const practiceAndTestHard = {
-  timeline: [block_indicator, /*instructions_hard, startPractice, practiceHardBlock, afterPracticeHard,*/ hardBlock, afterHardBlock],
+  timeline: [block_indicator, instructions_hard, startPractice, practiceHardBlock, afterPracticeHard, hardBlock, afterHardBlock],
   repetitions: 1,
   randomize_order: false,
   on_start: function () {
@@ -658,6 +661,7 @@ if (Math.random() < 0.5) {
 } else {
   experimentBlocks = [practiceAndTestEasy, practiceAndTestHard];
 }
+
 const experiment = {
 timeline: experimentBlocks,
 randomize_order: true,
@@ -687,7 +691,7 @@ const debriefBlock = {
 };
 
 jsPsych.data.addProperties({subject: subjectId});
-timeline.push({type: "fullscreen", fullscreen_mode: false},/* welcome, instructions_flanker_1, flanker_practice, afterFlankerPractice,*/ /*startPractice, practiceBlock, afterPractice, firstBlock, betweenBlockRest, ready, secondBlock,*/ experiment, debriefBlock, {type: "fullscreen", fullscreen_mode: false});
+timeline.push({type: "fullscreen", fullscreen_mode: false}, welcome, instructions_flanker_1, flanker_practice, afterFlankerPractice, /*startPractice, practiceBlock, afterPractice, firstBlock, betweenBlockRest, ready, secondBlock,*/ experiment, debriefBlock, {type: "fullscreen", fullscreen_mode: false});
 // instructions, instructions_flanker_1, experiment, debriefBlock.
 
 /*************** EXPERIMENT START AND DATA UPDATE ***************/

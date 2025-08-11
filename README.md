@@ -12,7 +12,7 @@ Vékony, T. (2021). Verbal N-back task created with jsPsych (Version 1.0.0) [Com
 <a href="https://zenodo.org/badge/latestdoi/335255298"><img src="https://zenodo.org/badge/335255298.svg" alt="DOI"></a>
 
 <h2>Structure of the task</h2>
-<p>In the task, letters are presented on the screen consecutively. The users' task is to press the "J" key on the keyboard for the target elements, and the "F" for the non-target elements. The target stimulus differs between the different level of the task. The task begins with written instructions. Before the two blocks, a 10-trial practice is implemented. During the practice, the users receive feedback about their answer ("Correct", "Wrong", "You did not respond"). After the practice, the two 50-trial long blocks begin. Between blocks, a self-paced rest period is inserted. After the end of twhe second block, the users receive feedback about there overall success rate and reaction time.</p>
+<p>In the task, letters are presented on the screen consecutively. The users' task is to press the "J" key on the keyboard for the target elements, and the "F" for the non-target elements. The target stimulus differs between the different level of the task. The task begins with written instructions. Before the two blocks, a 10-trial practice is implemented. During the practice, the users receive feedback about their answer ("Correct", "Wrong", "You did not respond"). After the practice, the two 50-trial long blocks begin. Between blocks, a self-paced rest period is inserted. After the end of the second block, the users receive feedback about there overall success rate and reaction time.</p>
 
 <h2>The levels of the task</h2>
 Depending on the value of the <i>level</i> variable (can be modified in <i>parameters.js</i>), 0-back, 1-back, 2-back and 3-back will be performed.
@@ -90,3 +90,54 @@ Open the <i>index.html</i> file in either the <i>offline</i> or <i>online</i> fo
 
 <h2>Browser requirements</h2>
 <p>Any browser except Safari and Internet Explorer. Recommended: Chrome</p>
+
+
+  <h2>Data Structure Description for Flanker and N-Back Tasks</h1>
+  <hr>
+
+  <h2>For Each Flanker Trial:</h2> 
+  <ul>
+    <li><strong>rt</strong>: Reaction time in milliseconds</li>
+    <li><strong>response</strong>: [1, 2]</li>
+    <li><strong>stimulus</strong>: e.g., ">> or <<<"</li>
+    <li><strong>block_trial_count</strong>: The number of flanker trial of the current flanker block (e.g., 3rd stimulus in the current block). This is reinitialized when timeout occurs.</li>
+    <li><strong>timeout</strong>: [0, 1] — If it is the last trial of a flanker batch, then do not take it into account.</li>
+    <li><strong>task</strong>: "flanker"</li>
+    <li><strong>practice_indicator</strong>: 0 = main, 1 = practice</li>
+    <li><strong>item</strong>: [1 to 16] — Three stimuli in one item</li>
+    <li><strong>stim, resp1, resp2</strong></li>
+    <li><strong>correct_response</strong>: [1, 2] — Indicates which is the correct button to press</li>
+    <li><strong>condition</strong>: Could be "nothing", "undefined", etc.</li>
+    <li><strong>accuracy</strong>: Whether the right button was pressed (1 = yes, 0 = no)</li>
+  </ul>
+
+  <h2>For Each N-Back Trial:</h2>
+  <ul>
+    <li><strong>correct_rejection</strong>: [1 or 0]</li>
+    <li><strong>miss</strong>: [1 or 0]</li>
+    <li><strong>hit</strong>: [1 or 0]</li>
+    <li><strong>false_alarm</strong>: [1 or 0]</li>
+    <li><strong>test_part</strong>: e.g., "test"</li>
+    <li><strong>level</strong>: e.g., "3-back"</li>
+    <li><strong>correct_response</strong>: [0, 1]</li>
+    <li><strong>block</strong>:
+      <ul>
+        <li>practice hard</li>
+        <li>practice easy</li>
+        <li>stimuli hard</li>
+        <li>stimuli easy</li>
+      </ul>
+    </li>
+    <li><strong>trial_number</strong>: The number of the trial in the current block (range: [1, 63])</li>
+    <li><strong>target</strong>: "1" or "0"</li>
+    <li><strong>letter</strong>: e.g., "J"</li>
+    <li><strong>task</strong>: "n-back"</li>
+  </ul>
+
+  <h3>+ html-keyboard-response:</h3>
+  <ul>
+    <li><strong>response</strong>: [0, 1]</li>
+    <li><strong>rt</strong>: In milliseconds</li>
+    <li><strong>stimulus</strong>: e.g., "J"</li>
+  </ul>
+</body>
