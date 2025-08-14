@@ -88,3 +88,7 @@ function updateSpan() {
 		return false;
 	}
 };
+
+function updateTotalTrials() {
+    fdsTotalTrials = 2
+}

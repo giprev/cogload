@@ -148,3 +148,22 @@ body {
 /* .jspsych-display-element {
     color: white;
 } */
+
+table.mpl { border-collapse: collapse; margin: auto;}
+
+/* Remove right border from second column and left border from third column */
+.mpl td:nth-child(2) {
+border-right: none;
+}
+.mpl td:nth-child(3) {
+border-left: none;
+}
+table.mpl td, table.mpl th { border: 1px solid #999; padding: 3px 8px; text-align: center; }
+
+table.mpl td.choice, table.mpl td.mirror { cursor: pointer; }
+
+table.mpl td.choice:hover, table.mpl td.mirror:hover{ background-color: #eef; }
+
+input[type=radio] { display: none; }
+
+.selected { background-color: #cce !important; }

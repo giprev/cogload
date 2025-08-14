@@ -29,7 +29,7 @@ var totalTrials = 0; //counter for total trials
 var maxSpan; //value that will reflect a participant's maximum span (e.g., 6)
 var folder = "digits/"; //folder name for storing the audio files
 var fdsTrialNum = 1; //counter for trials
-var fdsTotalTrials = 12; //total number of desired trials
+let fdsTotalTrials = 12; //total number of desired trials
 var response = []; //for storing partcipants' responses
 var fds_correct_ans; //for storing the correct answer on a given trial
 var staircaseChecker = []; //for assessing whether the span should move up/down/stay
@@ -42,7 +42,7 @@ var spanHistory = []; //easy logging of the participant's trajectory
 var stimList; //this is going to house the ordering of the stimuli for each trial
 var idx = 0; //for indexing the current letter to be presented
 var exitLetters; //for exiting the letter loop
-
+var fdb = "Not assigned"; // is the feedback displayed for the span, when it nothing has been selected
 
 const arrSum = arr => arr.reduce((a,b) => a + b, 0) //simple variable for calculating sum of an array
 
@@ -442,7 +442,8 @@ const afterFlankerPractice = {
 
 const instructions_span = {
     type: "html-button-response",
-    stimulus: '<p>On each trial, you will see a sequence of digits and be asked to type them back in the same order in which they were seen.</p>'+
+    stimulus: '<p>Instructions for the span test game.</p>'+
+                '<p>On each trial, you will see a sequence of digits and be asked to type them back in the same order in which they were seen.</p>'+
                 '<p>For example, if you saw the digits <b style="color:blue;">1</b>, <b style="color:blue;">2</b>, '+ 
                 '<b style="color:blue;">3</b>, you would respond with <b style="color:blue;">1</b>, <b style="color:blue;">2</b>, <b style="color:blue;">3</b></p>',
     choices: ["Continue"]
@@ -497,7 +498,11 @@ const instructions_span = {
 //         }
 // };
 
-var fdb = "Not assigned";
+const fdsTotalTrials_update = {
+    type: 'call-function',
+    func: updateTotalTrials
+}
+
 
 const feedback_span ={
     type: 'html-keyboard-response',
@@ -519,28 +524,9 @@ const feedback_span ={
         console.log(fdb)
         console.log(response, "is response")
         return trial.stimulus = `<p><b>${fdb}</b><br>Your answer was ${jsPsych.data.get().last(2).values()[0].answer}, the right numbers were ${fds_correct_ans}</br></p>`
-    }
+    },
 }
 
-// chatGPT's version
-// const feedback_span = {
-//     type: 'html-keyboard-response',
-//     stimulus: '',           // will be set in on_start
-//     choices: jsPsych.NO_KEYS,
-//     trial_duration: 2000,
-//     on_start: function(trial) {
-//       const last = jsPsych.data.get().last(1).values()[0] || {};
-//       let fdb;
-//       if (last.was_correct === 1) fdb = 'right';
-//       else if (last.was_correct === 0) fdb = 'wrong';
-//       else fdb = 'you did not answer';
-  
-//       const response = (last.response !== undefined) ? last.response : 'no response';
-//       const fds_correct_ans = last.fds_correct_ans || last.correct_answer || 'N/A';
-  
-//       trial.stimulus = `<p><b>${fdb}</b><br>Your answer was ${response}, the right numbers were ${fds_correct_ans}</p>`;
-//     }
-//   };
   
 
 //set-up screen
@@ -698,7 +684,219 @@ const block_indicator = {
 //     }
 //   }
 
+// MPL trials and timeline, 
+
+// let sure_payments = [];
+// for (var i = 20; i >= 1; i--) {
+//   sure_payments.push(i);
+// }
+// let mpl_table = `
+//   <table border="1" style="border-collapse: collapse; text-align: center;">
+//     <tr><th>Row</th><th>Lottery</th><th>Sure payment</th><th>Choice</th></tr>
+//     ${sure_payments.map((amount, i) => `
+//       <tr>
+//         <td>${i+1}</td>
+//         <td>50% chance to win 20€, else 0€</td>
+//         <td>${amount}€ for sure</td>
+//         <td>
+//           <input type="radio" name="row${i}" value="A" required> A
+//           <input type="radio" name="row${i}" value="B" required> B
+//         </td>
+//       </tr>
+//     `).join('')}
+//   </table>
+// `;
+
+// const mpl_trial = {
+//   type: 'survey-html-form',
+//   html: mpl_table,
+//   on_load: function() {
+//     console.log("on_load function functions")
+//   }
+// };
+
+// Data setup
+function surePaymentsGenerator(x) { // add that it can't go under 0
+  let payments = []; // Create a local array
+  for (let i = x + 10; i >= (x-10); i--) {
+    payments.push(i);
+  };
+  console.log(payments);
+  return payments; 
+}
+
+let sure_payments = [];
+
+function mplGenerator(G, y) {
+  // Map G to multiplier
+  const multipliers = {
+    G: 0.25,
+    L: -0.25,
+    A: 0
+  };
+
+  let x = (multipliers[G] || 0) * y;
+
+  // Generate sure payment values
+  sure_payments = surePaymentsGenerator(x);
+
+  // HTML generation
+  let rows = sure_payments.map((amt, i) => `
+    <tr>
+      <td>${i + 1}</td>
+      <td class="choice" data-row="${i}" data-choice="lottery">
+        $25
+        <input type="radio" name="row${i}" value="lottery">
+      </td>
+      <td class="mirror" data-row="${i}">$0</td>
+      <td class="choice" data-row="${i}" data-choice="sure">
+        $${amt}
+        <input type="radio" name="row${i}" value="sure">
+      </td>
+    </tr>
+  `).join('');
+
+  let mpl_html = `
+    <p>Please make your choices. Once you switch from the sure payment to the lottery (or vice versa), all later rows will be selected automatically.</p>
+    <table class="mpl">
+      <tr>
+        <th></th>
+        <th colspan="2">Set A</th>
+        <th>Set B</th>
+      </tr>
+      <tr>
+        <th>Version</th>
+        <th>${y} boxes</th>
+        <th>${100-y} boxes</th>
+        <th>100 boxes</th>
+      </tr>
+      ${rows}
+    </table>
+  `;
+
+  return mpl_html;
+}
+
+
+
+let mpl_html = mplGenerator("G", 30)
+
+// ------------------------------
+// JSPSYCH TRIAL
+// ------------------------------
+
+const mpl_trial = {
+  type: 'survey-html-form',
+  html: mpl_html,
+  on_load: function() {
+
+    function selectRow(row, choice) {
+        document.querySelectorAll(`.choice[data-row="${row}"]`)
+          .forEach(b => b.classList.remove('selected'));
+        let cell = document.querySelector(`.choice[data-row="${row}"][data-choice="${choice}"]`);
+        cell.classList.add('selected');
+        cell.querySelector('input').checked = true;
+      }
+
+    // document.querySelectorAll('.mirror').forEach(cell =>{
+    // cell.addEventListener('click', function() {
+    //     this.classList.add('selected');
+    //     let row = parseInt(this.dataset.row);
+    //     document.querySelectorAll(`.choice[data-row="${row}"][data-choice="lottery"]`).forEach(choiceCell => {
+    //         console.log(choiceCell, "should be the the lottery equivalent from the mirror cell selected")
+    //         choiceCell.classList.add('selected');
+    //         choiceCell.querySelector('input').checked = true;
+    //     }
+    //     )
+    // })
+    // })
+    document.querySelectorAll('.mirror').forEach(cell => {
+      cell.addEventListener('click', function() {
+          this.classList.add('selected');
+          let row = parseInt(this.dataset.row);
+          console.log(row, "is row of mirror")
+          let lotteryCell = document.querySelector(`.choice[data-row="${row}"][data-choice="lottery"]`);
+          // this.classList.add('selected')
+      if (lotteryCell) {
+          let clickEvent = new MouseEvent('click', {
+              bubbles: true,    // Allows the event to bubble up through the DOM
+              cancelable: true,  // Allows the event to be canceled
+              // view: window       // Associates the event with the window
+          });
+          lotteryCell.dispatchEvent(clickEvent);
+          }
+    });
+    });
+    
+    document.querySelectorAll('.choice').forEach(cell => {
+      cell.addEventListener('click', function() {
+        let row = parseInt(this.dataset.row); // dataset refers to all the custom data attributes of an element (data-*)
+        console.log(row, "is row of choice")
+        let choice = this.dataset.choice;
+
+        // Fill from row 0 to clicked row with clicked choice
+        for (let r = 0; r <= row; r++) {
+          selectRow(r, choice);
+          if (choice == "lottery"){
+            document.querySelector(`.mirror[data-row="${r}"]`).classList.add('selected')
+          }
+          if (choice == "sure") {
+            document.querySelector(`.mirror[data-row="${r}"]`).classList.remove('selected')
+          }
+        }
+  
+        // Fill from clicked row+1 to end with the *opposite* choice
+        let otherChoice = (choice === 'sure') ? 'lottery' : 'sure';
+        for (let r = row + 1; r < sure_payments.length; r++) {
+          selectRow(r, otherChoice);
+          if (choice == "lottery"){
+            document.querySelector(`.mirror[data-row="${r}"]`).classList.remove('selected')
+          }
+          if (choice == "sure") {
+            document.querySelector(`.mirror[data-row="${r}"]`).classList.add('selected')
+          }        }
+
+
+      });
+    });
+  
+
+
+  },
+
+  
+  on_finish: function(data) {
+    // Parse the responses JSON
+    console.log(data)
+    let responses_mpl = JSON.parse(data.responses);
+    console.log(data.responses)
+
+    // Determine switching row
+    let prevChoice = null;
+    let switchRow = null;
+    let choicesArray = [];
+
+    for (var i = 0; i < sure_payments.length; i++) {
+      let choice = responses_mpl[`row${i}`];
+      choicesArray.push(choice);
+      if (prevChoice && choice !== prevChoice && switchRow === null) {
+        switchRow = i + 1; // +1 for human-readable row index
+      }
+      prevChoice = choice;
+    }
+
+    data.switch_row = switchRow; // null means no switch
+    console.log(switchRow)
+    data.choices = choicesArray;
+    console.log(choicesArray)
+    data.sure_payments = sure_payments;
+    console.log(sure_payments)
+  }
+};
+
+
 /*************** TIMELINE ***************/
+
  
 const timelineElementStructure = {
     repetitions: 1,
@@ -712,7 +910,6 @@ const flanker_practice = {
     //     return nbackCounter > 0 && nbackCounter % 10 === 0
     // }
 }
-
 
 const flanker_1 = {
   timeline: [trial_flanker, feedback_flanker ],
@@ -867,6 +1064,7 @@ const practiceAndTestEasy_nback_flanker = {
     block_order++;
   }
 };
+
 const practiceAndTestHard_nback_flanker = {
   timeline: [block_indicator, instructions_hard, startPractice, practiceHardBlock_nback_flanker, afterPracticeHard, hardBlock_nback_flanker, afterHardBlock_flanker],
   repetitions: 1,
@@ -915,6 +1113,7 @@ const debriefBlock = {
   on_finish: function(trial) { statCalculation(trial) }
 };
 
+
 // span timelines
 
 var letter_proc = {
@@ -928,24 +1127,27 @@ var letter_proc = {
     }
 }
 
-var staircase = {
+const staircase = {
     timeline: [setup_fds, letter_proc, fds_response_screen , staircase_assess]
     }
     
-var fds_practiceproc = {
-    timeline: [staircase, feedback_span],
+const fds_practiceproc = {
+    timeline: [fdsTotalTrials_update, staircase, feedback_span],
     loop_function: function() {
         //if we have reached the specified total trial amount, exit
         // if(fdsTrialNum > fdsTotalTrials) {
         if(fdsTrialNum == 3) {
+            fdsTotalTrials = 12
+            fdsTrialNum =1
+            console.log(fdsTotalTrials, "is fdsTotalTrials at the end of the loop practice session")
             return false;
         } else {
             return true;
         }
-    }
+    },
 };
 
-var fds_mainproc = {
+const fds_mainproc = {
     timeline: [staircase],
     conditional_function: function () {
         if (nbackCounter > 0 && nbackCounter % 10 === 0) {
@@ -996,26 +1198,19 @@ const practiceAndTestHard_nback_span = {
   }
 };
 
-if (Math.random() < 0.5) {
-    experimentBlocks_nback_span = [practiceAndTestHard_nback_span, practiceAndTestEasy_nback_span];
-    console.log(experimentBlocks_nback_span)
-    console.log("experimentBlocks_nback_span")
-  } else {
-    experimentBlocks_nback_span = [practiceAndTestEasy_nback_span, practiceAndTestHard_nback_span];
-    console.log(experimentBlocks_nback_span)
-    console.log("experimentBlocks_nback_span")
-  }
+if (Math.random() < 0.5) { experimentBlocks_nback_span = [practiceAndTestHard_nback_span, practiceAndTestEasy_nback_span];} 
+else { experimentBlocks_nback_span = [practiceAndTestEasy_nback_span, practiceAndTestHard_nback_span]; }
+
 const experiment_nback_span = {
 timeline: experimentBlocks_nback_span,
 randomize_order: true,
 };
-console.log(experiment_nback_span)
 
 
 /* main timeline */ 
 
 jsPsych.data.addProperties({subject: subjectId});
-timeline.push({type: "fullscreen", fullscreen_mode: false}, welcome, instructions_span, fds_practiceproc, experiment_nback_span, instructions_flanker_1, flanker_practice, afterFlankerPractice, /*startPractice, practiceBlock, afterPractice, firstBlock, betweenBlockRest, ready, secondBlock,*/ experiment_nback_flanker,  debriefBlock, {type: "fullscreen", fullscreen_mode: false});
+timeline.push({type: "fullscreen", fullscreen_mode: false}, mpl_trial, welcome, instructions_span, fds_practiceproc, experiment_nback_span, instructions_flanker_1, flanker_practice, afterFlankerPractice, /*startPractice, practiceBlock, afterPractice, firstBlock, betweenBlockRest, ready, secondBlock,*/ experiment_nback_flanker,  debriefBlock, {type: "fullscreen", fullscreen_mode: false});
 // instructions, instructions_flanker_1, experiment, debriefBlock.
 
 /*************** EXPERIMENT START AND DATA UPDATE ***************/
