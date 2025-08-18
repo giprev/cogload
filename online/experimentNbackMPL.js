@@ -726,7 +726,6 @@ function surePaymentsGenerator(x) { // add that it can't go under 0
 }
 
 let sure_payments = [];
-
 function mplGenerator(G, y) {
   // Map G to multiplier
   const multipliers = {
@@ -779,7 +778,7 @@ function mplGenerator(G, y) {
 
 
 
-let mpl_html = mplGenerator("G", 30)
+let mpl_html = mplGenerator("L", 75)
 
 // ------------------------------
 // JSPSYCH TRIAL
@@ -798,22 +797,10 @@ const mpl_trial = {
         cell.querySelector('input').checked = true;
       }
 
-    // document.querySelectorAll('.mirror').forEach(cell =>{
-    // cell.addEventListener('click', function() {
-    //     this.classList.add('selected');
-    //     let row = parseInt(this.dataset.row);
-    //     document.querySelectorAll(`.choice[data-row="${row}"][data-choice="lottery"]`).forEach(choiceCell => {
-    //         console.log(choiceCell, "should be the the lottery equivalent from the mirror cell selected")
-    //         choiceCell.classList.add('selected');
-    //         choiceCell.querySelector('input').checked = true;
-    //     }
-    //     )
-    // })
-    // })
     document.querySelectorAll('.mirror').forEach(cell => {
       cell.addEventListener('click', function() {
-          this.classList.add('selected');
           let row = parseInt(this.dataset.row);
+          this.classList.add('selected');
           console.log(row, "is row of mirror")
           let lotteryCell = document.querySelector(`.choice[data-row="${row}"][data-choice="lottery"]`);
           // this.classList.add('selected')
@@ -826,14 +813,27 @@ const mpl_trial = {
           lotteryCell.dispatchEvent(clickEvent);
           }
     });
+      cell.addEventListener('mouseenter', function() {
+        let row = parseInt(this.dataset.row);
+        let lotteryCell = document.querySelector(`.choice[data-row="${row}"][data-choice="lottery"]`);
+        if (lotteryCell){
+          lotteryCell.classList.add('hovered');
+        }
+      });
+      cell.addEventListener('mouseleave', function() {
+        let row = parseInt(this.dataset.row);
+        let lotteryCell = document.querySelector(`.choice[data-row="${row}"][data-choice="lottery"]`);
+        if (lotteryCell) {
+          lotteryCell.classList.remove('hovered');
+        }
+      });
     });
-    
+  
     document.querySelectorAll('.choice').forEach(cell => {
       cell.addEventListener('click', function() {
         let row = parseInt(this.dataset.row); // dataset refers to all the custom data attributes of an element (data-*)
         console.log(row, "is row of choice")
         let choice = this.dataset.choice;
-
         // Fill from row 0 to clicked row with clicked choice
         for (let r = 0; r <= row; r++) {
           selectRow(r, choice);
@@ -844,8 +844,7 @@ const mpl_trial = {
             document.querySelector(`.mirror[data-row="${r}"]`).classList.remove('selected')
           }
         }
-  
-        // Fill from clicked row+1 to end with the *opposite* choice
+        // Fill from clicked row+1 to end with the opposite choice
         let otherChoice = (choice === 'sure') ? 'lottery' : 'sure';
         for (let r = row + 1; r < sure_payments.length; r++) {
           selectRow(r, otherChoice);
@@ -855,13 +854,8 @@ const mpl_trial = {
           if (choice == "sure") {
             document.querySelector(`.mirror[data-row="${r}"]`).classList.add('selected')
           }        }
-
-
       });
     });
-  
-
-
   },
 
   

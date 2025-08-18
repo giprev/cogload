@@ -163,6 +163,7 @@ table.mpl td, table.mpl th { border: 1px solid #999; padding: 3px 8px; text-alig
 table.mpl td.choice, table.mpl td.mirror { cursor: pointer; }
 
 table.mpl td.choice:hover, table.mpl td.mirror:hover{ background-color: #eef; }
+table.mpl td.choice.hovered, table.mpl td.mirror.hovered{ background-color: #eef; }
 
 input[type=radio] { display: none; }
 
